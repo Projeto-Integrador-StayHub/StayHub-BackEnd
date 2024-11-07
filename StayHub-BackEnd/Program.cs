@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using StayHub_BackEnd.Services.Admin;
+using StayHub_BackEnd.Services.DonoHotel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAdmin, AdminService>();
+builder.Services.AddScoped<IDonoHotel, DonoHotelService>();
 
 builder.Services.AddDbContext<DbContext>(options =>
 {
