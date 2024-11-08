@@ -17,6 +17,18 @@ namespace StayHub_BackEnd.Controllers
             _iDonoHotel = iDonoHotel;
         }
 
+        [HttpGet("ListarDonos")]
 
+
+        [HttpGet("BuscarDono/{idDono}")]
+
+
+        [HttpPost("CriarDono")]
+
+
+        [HttpPut("AtualizarDono/{idDono}")]
+
+        [HttpDelete("ExcluirDono/{idDono}")]
+        
     }
 }
