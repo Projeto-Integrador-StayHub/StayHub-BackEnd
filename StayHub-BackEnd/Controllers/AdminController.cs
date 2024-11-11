@@ -24,7 +24,7 @@ namespace StayHub_BackEnd.Controllers
         }
 
         [HttpGet("BuscarAdminId/{idAdmin}")]
-        public async Task<ActionResult<ResponseModel<AdminModel>>> BuscarAdminId(int idAdmin)
+        public async Task<ActionResult<ResponseModel<AdminModel>>> BuscarAdmin(int idAdmin)
         {
             var admin = await _iadmin.BuscarAdmin(idAdmin);
             return Ok(admin);
@@ -37,14 +37,14 @@ namespace StayHub_BackEnd.Controllers
             return Ok(admins);
         }
 
-        [HttpPut("EditarAdmin")]
+        [HttpPut("EditarAdmin/{idAdmin}")]
         public async Task<ActionResult<ResponseModel<AdminModel>>> EditarAdmin(int idAdmin, AdminDto adminDto)
         {
             var admins = await _iadmin.EditarAdmin(idAdmin, adminDto);
             return Ok(admins);
         }
 
-        [HttpDelete("ExcluirAdmin")]
+        [HttpDelete("ExcluirAdmin/{idAdmin}")]
         public async Task<ActionResult<ResponseModel<AdminModel>>> ExcluirAdmin(int idAdmin)
         {
             var admins = await _iadmin.ExcluirAdmin(idAdmin);

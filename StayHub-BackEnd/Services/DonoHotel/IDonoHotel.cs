@@ -7,6 +7,7 @@ namespace StayHub_BackEnd.Services.DonoHotel
     {
         Task<ResponseModel<List<DonoHotelModel>>> ListarDonos();
         Task<ResponseModel<DonoHotelModel>> BuscarDono(int idDono);
+        Task<ResponseModel<DonoHotelModel>> BuscarDonoPorQuarto(int idQuarto);
         Task<ResponseModel<List<DonoHotelModel>>> CriarDono(DonoHotelDto donoHotelDto);
         Task<ResponseModel<DonoHotelModel>> EditarDono(int idDono, DonoHotelDto donoHotelDto);
         Task<ResponseModel<List<DonoHotelModel>>> ExcluirDono(int idDono);

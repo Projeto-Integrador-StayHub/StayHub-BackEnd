@@ -2,7 +2,6 @@
 using StayHub_BackEnd.Data;
 using StayHub_BackEnd.DTOs;
 using StayHub_BackEnd.Models;
-using StayHub_BackEnd.Services.Admin;
 
 namespace StayHub_BackEnd.Services.DonoHotel
 {
@@ -20,7 +19,7 @@ namespace StayHub_BackEnd.Services.DonoHotel
 
             try
             {
-                var dono = await _context.DonosHoteis.FirstOrDefaultAsync(x => x.Id == idDono); // se der bo, mudar "x" para "adminBd"
+                var dono = await _context.DonosHoteis.FirstOrDefaultAsync(x => x.Id == idDono); // se der bo, mudar "x" para ""
 
                 if (dono == null)
                 {
@@ -29,6 +28,32 @@ namespace StayHub_BackEnd.Services.DonoHotel
                 }
 
                 resposta.Dados = dono;
+                resposta.Mensagem = "Dono encontrado!";
+                return resposta;
+            }
+            catch (Exception ex)
+            {
+                resposta.Mensagem = ex.Message;
+                resposta.Status = false;
+                return resposta;
+            }
+        }
+
+        public async Task<ResponseModel<DonoHotelModel>> BuscarDonoPorQuarto(int idQuarto)
+        {
+            ResponseModel<DonoHotelModel> resposta = new ResponseModel<DonoHotelModel>();
+
+            try
+            {
+                var quarto = await _context.Quartos.Include(a => a.Dono).FirstOrDefaultAsync(x => x.Id == idQuarto);
+
+                if (quarto == null)
+                {
+                    resposta.Mensagem = "Dono não foi encontrado!";
+                    return resposta;
+                }
+
+                resposta.Dados = quarto.Dono;
                 resposta.Mensagem = "Dono encontrado!";
                 return resposta;
             }
