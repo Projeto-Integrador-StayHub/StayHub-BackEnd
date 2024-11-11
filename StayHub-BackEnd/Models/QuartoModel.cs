@@ -11,6 +11,5 @@
         public bool Disponibilidade {  get; set; }
         public List<string> Comodidades { get; set; }
         public string Endereco { get; set; }
-        public decimal Avaliacao { get; set; }
     }
 }
