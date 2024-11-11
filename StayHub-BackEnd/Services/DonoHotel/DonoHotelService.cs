@@ -140,11 +140,12 @@ namespace StayHub_BackEnd.Services.DonoHotel
 
             try
             {
-                var dono = await _context.Admins.FirstOrDefaultAsync(x => x.Id == idDono);
+                var dono = await _context.DonosHoteis.FirstOrDefaultAsync(x => x.Id == idDono);
 
                 if (dono == null)
                 {
                     resposta.Mensagem = "Dono não foi encontrado!";
+                    resposta.Status = false;
                     return resposta;
                 }
 

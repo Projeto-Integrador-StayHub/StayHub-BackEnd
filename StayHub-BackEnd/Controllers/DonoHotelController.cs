@@ -57,5 +57,6 @@ namespace StayHub_BackEnd.Controllers
             var dono = await _iDonoHotel.ExcluirDono(idDono);
             return Ok(dono);
         }
+
     }
 }
