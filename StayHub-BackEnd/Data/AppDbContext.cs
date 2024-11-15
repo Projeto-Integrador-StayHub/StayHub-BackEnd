@@ -14,5 +14,6 @@ namespace StayHub_BackEnd.Data
         public DbSet<HospedeModel> Hospedes { get; set; }
         public DbSet<QuartoModel> Quartos { get; set; }
         public DbSet<ReservaModel> Reservas { get; set; }
-}
+        public DbSet<AvaliacaoModel> Avaliacoes {  get; set; }
+    }
 }
