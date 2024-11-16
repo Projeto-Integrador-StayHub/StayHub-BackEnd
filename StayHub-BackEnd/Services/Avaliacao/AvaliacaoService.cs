@@ -105,7 +105,7 @@ namespace StayHub_BackEnd.Services.Avaliacao
 
                 if (avaliacao == null)
                 {
-                    resposta.Mensagem = "Dono não foi encontrado!";
+                    resposta.Mensagem = "Avaliacao não foi encontrado!";
                     return resposta;
                 }
 
