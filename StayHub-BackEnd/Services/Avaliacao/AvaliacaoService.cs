@@ -78,6 +78,8 @@ namespace StayHub_BackEnd.Services.Avaliacao
                 {
                     Descricao = avaliacaoDto.Descricao,
                     Avaliacao = avaliacaoDto.Avaliacao
+                    //,Quarto = avaliacaoDto.Quarto,
+                    //Hospede = avaliacaoDto.Hospede
                 };
 
                 _context.Add(avaliacao);

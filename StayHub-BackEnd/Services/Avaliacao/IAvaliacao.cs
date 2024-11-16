@@ -10,6 +10,6 @@ namespace StayHub_BackEnd.Services.Avaliacao
         Task<ResponseModel<List<AvaliacaoModel>>> BuscarAvaliacoesPorQuarto(int idQuarto);
         Task<ResponseModel<List<AvaliacaoModel>>> CriarAvaliacao(AvaliacaoDto avaliacaoDto);
         Task<ResponseModel<AvaliacaoModel>> EditarAvaliacao(int idAvaliacao, AvaliacaoDto avaliacaoDto);
-        Task<ResponseModel<List<AvaliacaoModel>>> ExcluirAvaliacao(int idAvaliacaoono);
+        Task<ResponseModel<List<AvaliacaoModel>>> ExcluirAvaliacao(int idAvaliacao);
     }
 }
