@@ -27,7 +27,11 @@ namespace StayHub_BackEnd.Services.Hospede
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
+                }
                 resposta.Status = false;
                 return resposta;
             }
@@ -52,7 +56,11 @@ namespace StayHub_BackEnd.Services.Hospede
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
+                }
                 resposta.Status = false;
                 return resposta;
             }
@@ -84,9 +92,12 @@ namespace StayHub_BackEnd.Services.Hospede
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
+                }
                 resposta.Status = false;
-
                 return resposta;
             }
         }
@@ -124,7 +135,11 @@ namespace StayHub_BackEnd.Services.Hospede
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
+                }
                 resposta.Status = false;
                 return resposta;
             }
@@ -152,7 +167,11 @@ namespace StayHub_BackEnd.Services.Hospede
             }
             catch(Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
+                }
                 resposta.Status = false;
                 return resposta;
             }
