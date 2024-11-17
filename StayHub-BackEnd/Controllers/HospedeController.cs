@@ -2,7 +2,6 @@
 using StayHub_BackEnd.Services.Hospede;
 using StayHub_BackEnd.DTOs;
 using StayHub_BackEnd.Models;
-using StayHub_BackEnd.Services.Hospede;
 
 namespace StayHub_BackEnd.Controllers
 {
