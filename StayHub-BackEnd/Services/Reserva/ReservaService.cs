@@ -2,6 +2,7 @@
 using StayHub_BackEnd.Data;
 using StayHub_BackEnd.DTOs;
 using StayHub_BackEnd.Models;
+using StayHub_BackEnd.Services.Hospede;
 
 namespace StayHub_BackEnd.Services.Reserva
 {
@@ -19,7 +20,7 @@ namespace StayHub_BackEnd.Services.Reserva
             ResponseModel<List<ReservaModel>> resposta = new ResponseModel<List<ReservaModel>>();
             try
             {
-                var reservas = await _context.Reservas.ToListAsync();
+                var reservas = await _context.Reservas.Include(r => r.Hospede).ToListAsync();
                 resposta.Dados = reservas;
                 resposta.Mensagem = "Lista de reservas retornada com sucesso!";
                 resposta.Status = true;
@@ -27,7 +28,11 @@ namespace StayHub_BackEnd.Services.Reserva
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
+                }
                 resposta.Status = false;
                 return resposta;
             }
@@ -38,7 +43,8 @@ namespace StayHub_BackEnd.Services.Reserva
             ResponseModel<ReservaModel> resposta = new ResponseModel<ReservaModel>();
             try
             {
-                var reserva = await _context.Reservas.FirstOrDefaultAsync(reservaBanco => reservaBanco.Id == idReserva);
+                var reserva = await _context.Reservas.Include(r => r.Hospede).FirstOrDefaultAsync(reservaBanco => reservaBanco.Id == idReserva);
+
                 if (reserva == null)
                 {
                     resposta.Mensagem = "Reserva não localizada!";
@@ -51,7 +57,11 @@ namespace StayHub_BackEnd.Services.Reserva
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
+                }
                 resposta.Status = false;
                 return resposta;
             }
@@ -91,7 +101,11 @@ namespace StayHub_BackEnd.Services.Reserva
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
+                }
                 resposta.Status = false;
                 return resposta;
             }
@@ -102,8 +116,7 @@ namespace StayHub_BackEnd.Services.Reserva
             ResponseModel<ReservaModel> resposta = new ResponseModel<ReservaModel>();
             try
             {
-                var reserva = await _context.Reservas.FirstOrDefaultAsync(reservaBanco => reservaBanco.Id == idReserva);
-
+                var reserva = await _context.Reservas.Include(r => r.Hospede).FirstOrDefaultAsync(reservaBanco => reservaBanco.Id == idReserva);
                 if (reserva == null)
                 {
                     resposta.Mensagem = "Reserva não localizada!";
@@ -117,11 +130,19 @@ namespace StayHub_BackEnd.Services.Reserva
                 reserva.Saida = reservaDto.Saida;
                 reserva.Preco = reservaDto.Preco;
                 reserva.Status = reservaDto.Status;
+
+                if (reservaDto.HospedeId == null)
+                {
+                    resposta.Mensagem = "Hóspede não encontrado!";
+                    resposta.Status = false;
+                    return resposta;
+                }
+
                 reserva.HospedeId = reservaDto.HospedeId;
 
                 await _context.SaveChangesAsync();
-                resposta.Dados = reserva;
 
+                resposta.Dados = reserva;
                 resposta.Mensagem = "Reserva editada com sucesso!";
                 resposta.Status = true;
 
@@ -129,7 +150,11 @@ namespace StayHub_BackEnd.Services.Reserva
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
+                }
                 resposta.Status = false;
                 return resposta;
             }
@@ -140,7 +165,7 @@ namespace StayHub_BackEnd.Services.Reserva
             ResponseModel<List<ReservaModel>> resposta = new ResponseModel<List<ReservaModel>>();
             try
             {
-                var reserva = await _context.Reservas.FirstOrDefaultAsync(reservaBanco => reservaBanco.Id == idReserva);
+                var reserva = await _context.Reservas.Include(r => r.Hospede).FirstOrDefaultAsync(reservaBanco => reservaBanco.Id == idReserva);
                 if (reserva == null)
                 {
                     resposta.Mensagem = "Reserva não localizada!";
@@ -155,7 +180,11 @@ namespace StayHub_BackEnd.Services.Reserva
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
+                }
                 resposta.Status = false;
                 return resposta;
             }
