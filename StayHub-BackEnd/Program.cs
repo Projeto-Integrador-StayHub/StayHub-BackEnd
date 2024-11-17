@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StayHub_BackEnd.Data;
 using StayHub_BackEnd.Services.Admin;
+using StayHub_BackEnd.Services.Avaliacao;
 using StayHub_BackEnd.Services.DonoHotel;
 using StayHub_BackEnd.Services.Hospede;
 using StayHub_BackEnd.Services.Reserva;
@@ -14,10 +15,22 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddScoped<IAdmin, AdminService>();
 builder.Services.AddScoped<IDonoHotel, DonoHotelService>();
-builder.Services.AddScoped<IHospede, HospedeService>();
 builder.Services.AddScoped<IReserva, ReservaService>();
+builder.Services.AddScoped<IHospede, HospedeService>();
+builder.Services.AddScoped<IAvaliacao, AvaliacaoService>();
 
 IServiceCollection serviceCollection = builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer
@@ -33,6 +46,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 

@@ -52,7 +52,7 @@ namespace StayHub_BackEnd.Controllers
         }
 
         [HttpDelete("ExcluirDono/{idDono}")]
-        public async Task<ActionResult<ResponseModel<AdminModel>>> ExcluirDono(int idDono)
+        public async Task<ActionResult<ResponseModel<DonoHotelModel>>> ExcluirDono(int idDono)
         {
             var dono = await _iDonoHotel.ExcluirDono(idDono);
             return Ok(dono);
