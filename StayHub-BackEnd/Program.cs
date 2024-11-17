@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using StayHub_BackEnd.Data;
 using StayHub_BackEnd.Services.Admin;
 using StayHub_BackEnd.Services.DonoHotel;
+using StayHub_BackEnd.Services.Hospede;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +15,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAdmin, AdminService>();
 builder.Services.AddScoped<IDonoHotel, DonoHotelService>();
+builder.Services.AddScoped<IHospede, HospedeService>();
 
-builder.Services.AddDbContext<DbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
