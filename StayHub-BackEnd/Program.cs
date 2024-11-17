@@ -3,6 +3,7 @@ using StayHub_BackEnd.Data;
 using StayHub_BackEnd.Services.Admin;
 using StayHub_BackEnd.Services.Avaliacao;
 using StayHub_BackEnd.Services.DonoHotel;
+using StayHub_BackEnd.Services.Hospede;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,9 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IAdmin, AdminService>();
 builder.Services.AddScoped<IDonoHotel, DonoHotelService>();
+builder.Services.AddScoped<IHospede, HospedeService>();
 builder.Services.AddScoped<IAvaliacao, AvaliacaoService>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
