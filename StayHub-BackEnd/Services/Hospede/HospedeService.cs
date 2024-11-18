@@ -176,5 +176,13 @@ namespace StayHub_BackEnd.Services.Hospede
                 return resposta;
             }
         }
+
+        public async Task<HospedeModel> ValidateLoginAsync(string email, string senha)
+        {
+            var hospede = await _context.Hospedes
+            .FirstOrDefaultAsync(h => h.Email == email && h.Senha == senha);
+
+            return hospede;
+        }
     }
 }

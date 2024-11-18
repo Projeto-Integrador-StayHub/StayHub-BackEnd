@@ -2,6 +2,7 @@
 using StayHub_BackEnd.Services.Hospede;
 using StayHub_BackEnd.DTOs;
 using StayHub_BackEnd.Models;
+using Microsoft.AspNetCore.Identity.Data;
 
 namespace StayHub_BackEnd.Controllers
 {
@@ -48,6 +49,23 @@ namespace StayHub_BackEnd.Controllers
         {
             var hospede = await _hospedeInterface.ExcluirHospede(idHospede);
             return Ok(hospede);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+            {
+                return BadRequest("Email e senha são obrigatórios.");
+            }
+
+            var result = await _hospedeInterface.ValidateLoginAsync(request.Email, request.Password);
+            if (result == null)
+            {
+                return Unauthorized("Credenciais inválidas.");
+            }
+
+            return Ok(new { Message = "Login realizado com sucesso!" });
         }
     }
 }
