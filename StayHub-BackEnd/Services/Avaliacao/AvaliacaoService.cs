@@ -19,7 +19,7 @@ namespace StayHub_BackEnd.Services.Avaliacao
 
             try
             {
-                var avaliacao = await _context.Avaliacoes.FirstOrDefaultAsync(x => x.Id == idAvaliacao);
+                var avaliacao = await _context.Avaliacoes.Include(h => h.Hospede).Include(q => q.Quarto).FirstOrDefaultAsync(x => x.Id == idAvaliacao);
 
                 if (avaliacao == null)
                 {
@@ -33,7 +33,11 @@ namespace StayHub_BackEnd.Services.Avaliacao
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
+                }
                 resposta.Status = false;
                 return resposta;
             }
@@ -165,7 +169,7 @@ namespace StayHub_BackEnd.Services.Avaliacao
 
             try
             {
-                var avaliacao = await _context.Avaliacoes.ToListAsync();
+                var avaliacao = await _context.Avaliacoes.Include(h => h.Hospede).Include(q => q.Quarto).ToListAsync();
 
                 resposta.Dados = avaliacao;
                 resposta.Mensagem = "Lista de avaliacoes Retornada!";
