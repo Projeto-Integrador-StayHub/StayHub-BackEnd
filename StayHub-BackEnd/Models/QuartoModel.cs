@@ -16,5 +16,6 @@ namespace StayHub_BackEnd.Models
 
         [JsonIgnore]
         public ICollection<AvaliacaoModel> Avaliacao { get; set; }
+        public int DonoId { get; internal set; }
     }
 }
