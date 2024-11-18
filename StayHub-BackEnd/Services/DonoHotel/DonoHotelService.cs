@@ -185,5 +185,13 @@ namespace StayHub_BackEnd.Services.DonoHotel
             }
         }
 
+        public async Task<DonoHotelModel> ValidateLoginAsync(string email, string senha)
+        {
+            var dono = await _context.DonosHoteis
+            .FirstOrDefaultAsync(d => d.Email == email && d.Senha == senha);
+
+            return dono;
+        }
+
     }
 }

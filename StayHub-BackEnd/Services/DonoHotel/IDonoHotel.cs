@@ -11,5 +11,6 @@ namespace StayHub_BackEnd.Services.DonoHotel
         Task<ResponseModel<List<DonoHotelModel>>> CriarDono(DonoHotelDto donoHotelDto);
         Task<ResponseModel<DonoHotelModel>> EditarDono(int idDono, DonoHotelDto donoHotelDto);
         Task<ResponseModel<List<DonoHotelModel>>> ExcluirDono(int idDono);
+        Task<DonoHotelModel> ValidateLoginAsync(string email, string senha);
     }
 }
