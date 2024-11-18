@@ -19,7 +19,7 @@ namespace StayHub_BackEnd.Services.Avaliacao
 
             try
             {
-                var avaliacao = await _context.Avaliacoes.Include(h => h.Hospede).Include(q => q.Quarto).FirstOrDefaultAsync(x => x.Id == idAvaliacao);
+                var avaliacao = await _context.Avaliacoes.Include(h => h.Hospede).FirstOrDefaultAsync(x => x.Id == idAvaliacao); // .Include(q => q.Quarto)
 
                 if (avaliacao == null)
                 {
@@ -169,7 +169,7 @@ namespace StayHub_BackEnd.Services.Avaliacao
 
             try
             {
-                var avaliacao = await _context.Avaliacoes.Include(h => h.Hospede).Include(q => q.Quarto).ToListAsync();
+                var avaliacao = await _context.Avaliacoes.Include(h => h.Hospede).ToListAsync(); //// .Include(q => q.Quarto)
 
                 resposta.Dados = avaliacao;
                 resposta.Mensagem = "Lista de avaliacoes Retornada!";
