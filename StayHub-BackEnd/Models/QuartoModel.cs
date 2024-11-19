@@ -1,4 +1,6 @@
-﻿namespace StayHub_BackEnd.Models
+﻿using System.Text.Json.Serialization;
+
+namespace StayHub_BackEnd.Models
 {
     public class QuartoModel
     {
@@ -11,6 +13,8 @@
         public bool Disponibilidade {  get; set; }
         public List<string> Comodidades { get; set; }
         public string Endereco { get; set; }
-        public decimal Avaliacao { get; set; }
+
+        [JsonIgnore]
+        public ICollection<AvaliacaoModel> Avaliacao { get; set; }
     }
 }

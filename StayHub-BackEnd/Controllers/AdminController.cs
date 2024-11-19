@@ -24,7 +24,7 @@ namespace StayHub_BackEnd.Controllers
         }
 
         [HttpGet("BuscarAdminId/{idAdmin}")]
-        public async Task<ActionResult<ResponseModel<AdminModel>>> BuscarAdminId(int idAdmin)
+        public async Task<ActionResult<ResponseModel<AdminModel>>> BuscarAdmin(int idAdmin)
         {
             var admin = await _iadmin.BuscarAdmin(idAdmin);
             return Ok(admin);
