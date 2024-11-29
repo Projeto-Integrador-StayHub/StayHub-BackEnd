@@ -4,7 +4,9 @@ using StayHub_BackEnd.Services.Admin;
 using StayHub_BackEnd.Services.Avaliacao;
 using StayHub_BackEnd.Services.DonoHotel;
 using StayHub_BackEnd.Services.Hospede;
+using StayHub_BackEnd.Services.Pagamentos;
 using StayHub_BackEnd.Services.Reserva;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,11 +28,14 @@ builder.Services.AddCors(options =>
         });
 });
 
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
 builder.Services.AddScoped<IAdmin, AdminService>();
 builder.Services.AddScoped<IDonoHotel, DonoHotelService>();
 builder.Services.AddScoped<IReserva, ReservaService>();
 builder.Services.AddScoped<IHospede, HospedeService>();
 builder.Services.AddScoped<IAvaliacao, AvaliacaoService>();
+builder.Services.AddScoped<IPagamento, PagamentoService>();
 
 IServiceCollection serviceCollection = builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer
