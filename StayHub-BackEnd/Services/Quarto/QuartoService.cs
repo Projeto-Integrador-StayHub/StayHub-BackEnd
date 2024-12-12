@@ -2,16 +2,64 @@
 using StayHub_BackEnd.Data;
 using StayHub_BackEnd.DTOs;
 using StayHub_BackEnd.Models;
-using StayHub_BackEnd.Services.Admin;
+using Microsoft.Extensions.Logging;
 
 namespace StayHub_BackEnd.Services.Quarto
 {
     public class QuartoService : IQuarto
     {
         private readonly AppDbContext _context;
-        public QuartoService(AppDbContext context)
+        private readonly ILogger<QuartoService> _logger;
+
+        public QuartoService(AppDbContext context, ILogger<QuartoService> logger)
         {
             _context = context;
+            _logger = logger;
+        }
+
+        public async Task<ResponseModel<List<object>>> ListarQuartos()
+        {
+            ResponseModel<List<object>> resposta = new ResponseModel<List<object>>();
+
+            try
+            {
+                _logger.LogInformation("Iniciando a consulta dos quartos...");
+
+                var quartos = await _context.Quartos
+                    .Include(q => q.Dono)
+                    .Select(q => new
+                    {
+                        q.Id,
+                        q.NomeQuarto,
+                        q.Preco,
+                        q.CapacidadePessoas,
+                        q.Disponibilidade,
+                        Dono = new { q.Dono.Id, q.Dono.Nome }
+                    })
+                    .ToListAsync();
+
+                _logger.LogInformation("Dados de quartos retornados:");
+                _logger.LogInformation(System.Text.Json.JsonSerializer.Serialize(quartos));
+
+                resposta.Dados = quartos.Cast<object>().ToList();
+                resposta.Mensagem = "Lista de quartos retornada!";
+                resposta.Status = true;
+
+                return resposta;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Erro ao listar quartos: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    _logger.LogError($"InnerException: {ex.InnerException.Message}");
+                }
+
+                resposta.Mensagem = $"Erro ao listar quartos: {ex.Message}";
+                resposta.Status = false;
+
+                return resposta;
+            }
         }
 
         public async Task<ResponseModel<QuartoModel>> BuscarQuarto(int idQuarto)
@@ -20,49 +68,45 @@ namespace StayHub_BackEnd.Services.Quarto
 
             try
             {
-                var quarto = await _context.Quartos.Include(d => d.Dono).FirstOrDefaultAsync(x => x.Id == idQuarto);
+                _logger.LogInformation($"Buscando quarto com ID: {idQuarto}");
+
+                var quarto = await _context.Quartos
+                    .Include(q => q.Dono)
+                    .FirstOrDefaultAsync(q => q.Id == idQuarto);
 
                 if (quarto == null)
                 {
-                    resposta.Mensagem = "Quarto não foi encontrado!";
+                    _logger.LogWarning($"Quarto com ID {idQuarto} não encontrado.");
+                    resposta.Mensagem = "Quarto não encontrado!";
+                    resposta.Status = false;
                     return resposta;
                 }
 
+                _logger.LogInformation($"Quarto encontrado: {quarto.NomeQuarto}");
                 resposta.Dados = quarto;
                 resposta.Mensagem = "Quarto encontrado!";
+                resposta.Status = true;
+
                 return resposta;
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = $"Erro: {ex.Message}";
-                if (ex.InnerException != null)
-                {
-                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
-                }
+                _logger.LogError($"Erro ao buscar quarto por ID: {ex.Message}");
+                resposta.Mensagem = $"Erro ao buscar quarto por ID: {ex.Message}";
                 resposta.Status = false;
                 return resposta;
             }
         }
 
-        public async Task<ResponseModel<List<QuartoModel>>> CriarQuarto(QuartoDto quartoDto)
+        public async Task<ResponseModel<QuartoModel>> CriarQuarto(QuartoDto quartoDto)
         {
-            ResponseModel<List<QuartoModel>> resposta = new ResponseModel<List<QuartoModel>>();
+            ResponseModel<QuartoModel> resposta = new ResponseModel<QuartoModel>();
 
             try
             {
+                _logger.LogInformation("Iniciando a criação de um novo quarto.");
 
-                var donoHotel = await _context.DonosHoteis
-                .Where(d => d.Id == quartoDto.DonoId)
-                .Select(d => new DonoHotelModel { Id = d.Id }) 
-                .FirstOrDefaultAsync();
-                if (donoHotel == null)
-                {
-                    resposta.Mensagem = "Dono não encontrado!";
-                    resposta.Status = false;
-                    return resposta;
-                }
-
-                var quarto = new QuartoModel()
+                var quarto = new QuartoModel
                 {
                     NomeQuarto = quartoDto.NomeQuarto,
                     Descricao = quartoDto.Descricao,
@@ -74,20 +118,21 @@ namespace StayHub_BackEnd.Services.Quarto
                     DonoId = quartoDto.DonoId
                 };
 
-                _context.Add(quarto);
+                _context.Quartos.Add(quarto);
                 await _context.SaveChangesAsync();
 
-                resposta.Dados = await _context.Quartos.ToListAsync();
+                _logger.LogInformation($"Quarto {quarto.NomeQuarto} criado com sucesso.");
+
+                resposta.Dados = quarto;
                 resposta.Mensagem = "Quarto criado com sucesso!";
+                resposta.Status = true;
+
                 return resposta;
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = $"Erro: {ex.Message}";
-                if (ex.InnerException != null)
-                {
-                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
-                }
+                _logger.LogError($"Erro ao criar quarto: {ex.Message}");
+                resposta.Mensagem = $"Erro ao criar quarto: {ex.Message}";
                 resposta.Status = false;
                 return resposta;
             }
@@ -99,11 +144,16 @@ namespace StayHub_BackEnd.Services.Quarto
 
             try
             {
-                var quarto = await _context.Quartos.FirstOrDefaultAsync(x => x.Id == idQuarto);
+                _logger.LogInformation($"Iniciando a edição do quarto com ID: {idQuarto}");
+
+                var quarto = await _context.Quartos
+                    .FirstOrDefaultAsync(q => q.Id == idQuarto);
 
                 if (quarto == null)
                 {
-                    resposta.Mensagem = "Quarto não foi encontrado!";
+                    _logger.LogWarning($"Quarto com ID {idQuarto} não encontrado.");
+                    resposta.Mensagem = "Quarto não encontrado!";
+                    resposta.Status = false;
                     return resposta;
                 }
 
@@ -115,82 +165,75 @@ namespace StayHub_BackEnd.Services.Quarto
                 quarto.Comodidades = quartoDto.Comodidades;
                 quarto.Endereco = quartoDto.Endereco;
 
-                _context.Update(quarto);
                 await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"Quarto com ID {idQuarto} atualizado com sucesso.");
 
                 resposta.Dados = quarto;
                 resposta.Mensagem = "Quarto atualizado com sucesso!";
+                resposta.Status = true;
+
                 return resposta;
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = $"Erro: {ex.Message}";
-                if (ex.InnerException != null)
-                {
-                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
-                }
+                _logger.LogError($"Erro ao editar quarto: {ex.Message}");
+                resposta.Mensagem = $"Erro ao editar quarto: {ex.Message}";
                 resposta.Status = false;
                 return resposta;
             }
         }
 
-        public async Task<ResponseModel<List<QuartoModel>>> ExcluirQuarto(int idQuarto)
+        public async Task<ResponseModel<QuartoModel>> ExcluirQuarto(int idQuarto)
         {
-            ResponseModel<List<QuartoModel>> resposta = new ResponseModel<List<QuartoModel>>();
+            ResponseModel<QuartoModel> resposta = new ResponseModel<QuartoModel>();
 
             try
             {
-                var quarto = await _context.Quartos.FirstOrDefaultAsync(x => x.Id == idQuarto);
+                _logger.LogInformation($"Iniciando a exclusão do quarto com ID: {idQuarto}");
+
+                var quarto = await _context.Quartos
+                    .FirstOrDefaultAsync(q => q.Id == idQuarto);
 
                 if (quarto == null)
                 {
-                    resposta.Mensagem = "Quarto não foi encontrado!";
+                    _logger.LogWarning($"Quarto com ID {idQuarto} não encontrado.");
+                    resposta.Mensagem = "Quarto não encontrado!";
+                    resposta.Status = false;
+                    resposta.Dados = null;
                     return resposta;
                 }
 
-                _context.Remove(quarto);
+                var quartoExcluido = new QuartoModel
+                {
+                    Id = quarto.Id,
+                    NomeQuarto = quarto.NomeQuarto,
+                    Descricao = quarto.Descricao,
+                    Preco = quarto.Preco,
+                    CapacidadePessoas = quarto.CapacidadePessoas,
+                    Disponibilidade = quarto.Disponibilidade,
+                    Comodidades = quarto.Comodidades,
+                    Endereco = quarto.Endereco,
+                    DonoId = quarto.DonoId
+                };
+
+                _context.Quartos.Remove(quarto);
                 await _context.SaveChangesAsync();
 
-                resposta.Dados = await _context.Quartos.ToListAsync();
-                resposta.Mensagem = "Quarto deletado com sucesso!";
-                return resposta;
-            }
-            catch (Exception ex)
-            {
-                resposta.Mensagem = $"Erro: {ex.Message}";
-                if (ex.InnerException != null)
-                {
-                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
-                }
-                resposta.Status = false;
-                return resposta;
-            }
-        }
+                _logger.LogInformation($"Quarto com ID {idQuarto} excluído com sucesso.");
 
-        public async Task<ResponseModel<List<QuartoModel>>> ListarQuartos()
-        {
-            ResponseModel<List<QuartoModel>> resposta = new ResponseModel<List<QuartoModel>>();
-
-            try
-            {
-                var quartos = await _context.Quartos.Include(d => d.Dono).ToListAsync();
-
-                resposta.Dados = quartos;
-                resposta.Mensagem = "Lista de quartos Retornada!";
+                resposta.Mensagem = "Quarto excluído com sucesso!";
+                resposta.Status = true;
+                resposta.Dados = quartoExcluido;
 
                 return resposta;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(resposta));
-                resposta.Mensagem = $"Erro: {ex.Message}";
-                if (ex.InnerException != null)
-                {
-                    resposta.Mensagem += $" InnerException: {ex.InnerException.Message}";
-                }
+                _logger.LogError($"Erro ao excluir quarto: {ex.Message}");
+                resposta.Mensagem = $"Erro ao excluir quarto: {ex.Message}";
                 resposta.Status = false;
-                Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(resposta));
-
+                resposta.Dados = null;
                 return resposta;
             }
         }

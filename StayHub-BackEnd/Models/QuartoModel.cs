@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace StayHub_BackEnd.Models
 {
@@ -13,9 +14,9 @@ namespace StayHub_BackEnd.Models
         public bool Disponibilidade {  get; set; }
         public List<string> Comodidades { get; set; }
         public string Endereco { get; set; }
+        public int DonoId { get; internal set; }
 
         [JsonIgnore]
         public ICollection<AvaliacaoModel> Avaliacao { get; set; }
-        public int DonoId { get; internal set; }
     }
 }
