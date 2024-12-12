@@ -13,6 +13,8 @@ namespace StayHub_BackEnd.Models
         public bool Disponibilidade {  get; set; }
         public List<string> Comodidades { get; set; }
         public string Endereco { get; set; }
+        public string Cidade { get; set; }
+        public string Estado { get; set; }
 
         [JsonIgnore]
         public ICollection<AvaliacaoModel> Avaliacao { get; set; }
