@@ -14,6 +14,8 @@ namespace StayHub_BackEnd.Models
         public bool Disponibilidade {  get; set; }
         public List<string> Comodidades { get; set; }
         public string Endereco { get; set; }
+        public string Cidade { get; set; }
+        public string Estado { get; set; }
         public int DonoId { get; internal set; }
 
         [JsonIgnore]
