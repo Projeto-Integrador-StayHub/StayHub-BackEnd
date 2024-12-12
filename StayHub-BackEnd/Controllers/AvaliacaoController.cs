@@ -7,7 +7,7 @@ namespace StayHub_BackEnd.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AvaliacaoController : Controller
+    public class AvaliacaoController : ControllerBase
     {
         private readonly IAvaliacao _iavaliacao;
         public AvaliacaoController(IAvaliacao iavaliacao)

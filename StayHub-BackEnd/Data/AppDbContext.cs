@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StayHub_BackEnd.Models;
+using System.Text.Json;
 
 namespace StayHub_BackEnd.Data
 {
@@ -15,5 +16,15 @@ namespace StayHub_BackEnd.Data
         public DbSet<QuartoModel> Quartos { get; set; }
         public DbSet<ReservaModel> Reservas { get; set; }
         public DbSet<AvaliacaoModel> Avaliacoes {  get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<QuartoModel>()
+                .Property(q => q.Preco)
+                .HasColumnType("decimal(18,2)");
+        }
+
     }
 }
