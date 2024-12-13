@@ -44,8 +44,8 @@ namespace StayHub_BackEnd.Services.Pagamentos
                     Quantity = 1
                 }).ToList(),
                 Mode = "payment",
-                SuccessUrl = "https://seuprojeto.com/pagamento-sucesso",
-                CancelUrl = "https://seuprojeto.com/pagamento-cancelado",
+                SuccessUrl = "https://www.youtube.com/watch?v=tRsQiCuGhnc",
+                CancelUrl = "https://www.youtube.com/watch?v=Sc6dnE-Mir4",
             };
 
             var service = new SessionService();
