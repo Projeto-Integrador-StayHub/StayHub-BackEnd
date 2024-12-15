@@ -12,6 +12,8 @@ namespace StayHub_BackEnd.DTOs
         public bool Disponibilidade { get; set; }
         public string Comodidades { get; set; }
         public string Endereco { get; set; }
+        public string Estado { get; set; }
+        public string Cidade { get; set; }
         public int DonoId { get; set; }
     }
 }

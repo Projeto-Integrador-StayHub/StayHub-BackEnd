@@ -115,6 +115,8 @@ namespace StayHub_BackEnd.Services.Quarto
                     CapacidadePessoas = quartoDto.CapacidadePessoas,
                     Disponibilidade = quartoDto.Disponibilidade,
                     Comodidades = quartoDto.Comodidades,
+                    Estado = quartoDto.Estado,
+                    Cidade = quartoDto.Cidade,
                     Endereco = quartoDto.Endereco,
                     DonoId = quartoDto.DonoId
                 };
@@ -164,6 +166,8 @@ namespace StayHub_BackEnd.Services.Quarto
                 quarto.CapacidadePessoas = quartoDto.CapacidadePessoas;
                 quarto.Disponibilidade = quartoDto.Disponibilidade;
                 quarto.Comodidades = quartoDto.Comodidades;
+                quarto.Estado = quartoDto.Estado;
+                quarto.Cidade = quartoDto.Cidade;
                 quarto.Endereco = quartoDto.Endereco;
 
                 await _context.SaveChangesAsync();
@@ -214,6 +218,8 @@ namespace StayHub_BackEnd.Services.Quarto
                     CapacidadePessoas = quarto.CapacidadePessoas,
                     Disponibilidade = quarto.Disponibilidade,
                     Comodidades = quarto.Comodidades,
+                    Estado = quarto.Estado,
+                    Cidade = quarto.Cidade,
                     Endereco = quarto.Endereco,
                     DonoId = quarto.DonoId
                 };
