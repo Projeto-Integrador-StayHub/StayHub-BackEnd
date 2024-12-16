@@ -149,5 +149,13 @@ namespace StayHub_BackEnd.Services.Admin
             }
         }
 
+        public async Task<AdminModel> ValidateLoginAsync(string email, string senha)
+        {
+            var admin = await _context.Admins
+            .FirstOrDefaultAsync(x => x.Email == email && x.Senha == senha);
+
+            return admin;
+        }
+
     }
 }

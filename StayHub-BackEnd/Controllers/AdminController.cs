@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using StayHub_BackEnd.DTOs;
 using StayHub_BackEnd.Models;
@@ -49,6 +50,23 @@ namespace StayHub_BackEnd.Controllers
         {
             var admins = await _iadmin.ExcluirAdmin(idAdmin);
             return Ok(admins);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+            {
+                return BadRequest("Email e senha são obrigatórios.");
+            }
+
+            var result = await _iadmin.ValidateLoginAsync(request.Email, request.Password);
+            if (result == null)
+            {
+                return Unauthorized("Credenciais inválidas.");
+            }
+
+            return Ok(new { Message = "Login realizado com sucesso!" });
         }
 
     }

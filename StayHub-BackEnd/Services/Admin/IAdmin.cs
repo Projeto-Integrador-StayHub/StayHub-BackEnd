@@ -10,5 +10,6 @@ namespace StayHub_BackEnd.Services.Admin
         Task<ResponseModel<List<AdminModel>>> CriarAdmin(AdminDto adminDto);
         Task<ResponseModel<AdminModel>> EditarAdmin(int idAdmin, AdminDto adminDto);
         Task<ResponseModel<List<AdminModel>>> ExcluirAdmin(int idAdmin);
+        Task<AdminModel> ValidateLoginAsync(string email, string senha);
     }
 }
