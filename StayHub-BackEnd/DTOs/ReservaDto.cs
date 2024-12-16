@@ -11,7 +11,8 @@ namespace StayHub_BackEnd.DTOs
         public string Descricao { get; set; }
         public DateTime Entrada { get; set; }
         public DateTime Saida { get; set; }
-        public decimal Preco { get; set; }
+        public decimal Preco { get; set; } //multiplicar pelos dias
         public ReservaStatus Status { get; set; }
+        public PagamentoStatu PagamentoStatus { get; set; }
     }
 }
