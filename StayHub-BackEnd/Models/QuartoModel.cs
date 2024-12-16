@@ -20,5 +20,9 @@ namespace StayHub_BackEnd.Models
 
         [JsonIgnore]
         public ICollection<AvaliacaoModel> Avaliacao { get; set; }
+
+        //public IFormFile Fotos { get; set; }
+        public string FotosPath { get; set; }
+
     }
 }

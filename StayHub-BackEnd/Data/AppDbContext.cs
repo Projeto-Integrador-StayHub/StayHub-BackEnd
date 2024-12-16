@@ -35,6 +35,10 @@ namespace StayHub_BackEnd.Data
                 .Property(q => q.Estado)
                 .HasMaxLength(50)
                 .IsRequired();
+
+            modelBuilder.Entity<QuartoModel>()
+                .Property(q => q.FotosPath)
+                .IsRequired(false);
         }
 
     }

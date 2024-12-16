@@ -15,5 +15,7 @@ namespace StayHub_BackEnd.DTOs
         public string Estado { get; set; }
         public string Cidade { get; set; }
         public int DonoId { get; set; }
+        public IFormFile ? Fotos { get; set; }
+        public string ? FotosPath { get; set; }
     }
 }
