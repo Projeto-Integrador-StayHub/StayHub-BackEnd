@@ -13,5 +13,6 @@ namespace StayHub_BackEnd.Models
         public ReservaStatus Status { get; set; }
         public HospedeModel Hospede { get; set; }
         public int HospedeId { get; set; }
+        public PagamentoStatu PagamentoStatus { get; set; }
     }
 }
