@@ -17,3 +17,4 @@ namespace StayHub_BackEnd.DTOs
         public int DonoId { get; set; }
     }
 }
+
