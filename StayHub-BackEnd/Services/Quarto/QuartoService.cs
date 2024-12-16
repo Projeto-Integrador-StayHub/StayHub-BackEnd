@@ -38,6 +38,9 @@ namespace StayHub_BackEnd.Services.Quarto
                         q.CapacidadePessoas,
                         q.Disponibilidade,
                         q.Comodidades,
+                        q.Cidade,
+                        q.Estado,
+                        q.Endereco,
                         Dono = new { q.Dono.Id, q.Dono.Nome }
                     })
                     .ToListAsync();
