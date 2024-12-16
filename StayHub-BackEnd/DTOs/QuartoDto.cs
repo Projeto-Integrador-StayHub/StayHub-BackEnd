@@ -19,3 +19,4 @@ namespace StayHub_BackEnd.DTOs
         public string ? FotosPath { get; set; }
     }
 }
+
