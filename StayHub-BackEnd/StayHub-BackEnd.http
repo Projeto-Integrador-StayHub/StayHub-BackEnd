@@ -1,4 +1,4 @@
-@StayHub_BackEnd_HostAddress = http://localhost:5057
+@StayHub_BackEnd_HostAddress = https://localhost:7274
 
 GET {{StayHub_BackEnd_HostAddress}}/weatherforecast/
 Accept: application/json

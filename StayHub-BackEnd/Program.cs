@@ -59,10 +59,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowFrontend");
+app.UseCors(builder =>
+    builder.WithOrigins("http://localhost:3000")
+           .AllowAnyHeader()
+           .AllowAnyMethod());
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/", () => "API está funcionando!");
 
 app.Run();
