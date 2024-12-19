@@ -39,6 +39,17 @@ namespace StayHub_BackEnd.Data
             modelBuilder.Entity<QuartoModel>()
                 .Property(q => q.FotosPath)
                 .IsRequired(false);
+
+            modelBuilder.Entity<ReservaModel>()
+                .HasOne(r => r.Hospede)
+                .WithMany(h => h.Reservas)
+                .HasForeignKey(r => r.HospedeId);
+
+            modelBuilder.Entity<ReservaModel>()
+                .HasOne<QuartoModel>()
+                .WithMany()
+                .HasForeignKey(r => r.QuartoId);
+
         }
 
     }

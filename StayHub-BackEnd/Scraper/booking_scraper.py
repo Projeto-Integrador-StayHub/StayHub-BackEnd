@@ -24,7 +24,6 @@ def build_connection_string(config):
         f"Trusted_Connection=yes;"
     )
 
-
 # Function to get or create owner and return owner ID
 def get_or_create_owner(conn, owner_dto):
     cursor = conn.cursor()
@@ -108,58 +107,60 @@ def main():
         checkin_date = '2025-02-23'
         checkout_date = '2025-02-24'
 
-        cidades = [
-            # Paraná
-            "Curitiba", "Campo Mourão"
-        ]
+        estados_cidades = {
+            "Paraná": ["Curitiba", "Campo Mourão", "Londrina"],
+            "Santa Catarina": ["Florianópolis", "Balneário Camboriú", "Blumenau"],
+            "Rio Grande do Sul": ["Canela", "Porto Alegre", "Gramada"]
+        }
 
         browser = p.chromium.launch(headless=False)
         page = browser.new_page()
 
         all_hotels_list = []
 
-        for cidade in cidades:
-            encoded_destination = urllib.parse.quote(cidade)
-            page_url = (
-                f'https://www.booking.com/searchresults.pt-br.html?ss={encoded_destination}'
-                f'&checkin={checkin_date}&checkout={checkout_date}'
-                '&group_adults=2&no_rooms=1&group_children=0'
-            )
-
-            page.goto(page_url, timeout=60000)
-            page.wait_for_load_state("networkidle")
-
-            hotels = page.locator('[data-testid="property-card"]').all()
-            print(f'Tem: {len(hotels)} hotéis em {cidade}.')
-
-            for hotel in hotels:
-                hotel_dict = {}
-
-                hotel_dict['NomeQuarto'] = hotel.locator('[data-testid="title"]').inner_text().strip()
-
-                nome_quarto_elements = hotel.locator("//h4[contains(@class, 'abf093bdfe')]").all()
-                hotel_dict['Descricao'] = (
-                    nome_quarto_elements[0].inner_text().strip()
-                    if nome_quarto_elements else "Nome do quarto indisponível"
+        for estado, cidades in estados_cidades.items():
+            for cidade in cidades:
+                encoded_destination = urllib.parse.quote(cidade)
+                page_url = (
+                    f'https://www.booking.com/searchresults.pt-br.html?ss={encoded_destination}'
+                    f'&checkin={checkin_date}&checkout={checkout_date}'
+                    '&group_adults=2&no_rooms=1&group_children=0'
                 )
 
-                price_locator = hotel.locator('[data-testid="price-and-discounted-price"]')
-                if price_locator.count() > 0 and price_locator.first.is_visible():
-                    price_text = price_locator.first.inner_text()
-                    price_text = price_text.replace('\u00A0', ' ').replace('.', '').replace(',', '.').strip()
-                    hotel_dict['Preco'] = float(price_text.replace('R$', ''))
-                else:
-                    hotel_dict['Preco'] = 0.0  # Valor padrão
+                page.goto(page_url, timeout=60000)
+                page.wait_for_load_state("networkidle")
 
-                hotel_dict['CapacidadePessoas'] = 2
-                hotel_dict['Disponibilidade'] = True
-                hotel_dict['Comodidades'] = 'Indisponível'
-                hotel_dict['Estado'] = 'Paraná'
-                hotel_dict['Cidade'] = cidade
-                hotel_dict['Endereco'] = f'Centro, {cidade}'
-                hotel_dict['DonoId'] = owner_id  # Agora o owner_id está definido
+                hotels = page.locator('[data-testid="property-card"]').all()
+                print(f'Tem: {len(hotels)} hotéis em {cidade}, {estado}.')
 
-                all_hotels_list.append(hotel_dict)
+                for hotel in hotels:
+                    hotel_dict = {}
+
+                    hotel_dict['NomeQuarto'] = hotel.locator('[data-testid="title"]').inner_text().strip()
+
+                    nome_quarto_elements = hotel.locator("//h4[contains(@class, 'abf093bdfe')]").all()
+                    hotel_dict['Descricao'] = (
+                        nome_quarto_elements[0].inner_text().strip()
+                        if nome_quarto_elements else "Nome do quarto indisponível"
+                    )
+
+                    price_locator = hotel.locator('[data-testid="price-and-discounted-price"]')
+                    if price_locator.count() > 0 and price_locator.first.is_visible():
+                        price_text = price_locator.first.inner_text()
+                        price_text = price_text.replace('\u00A0', ' ').replace('.', '').replace(',', '.').strip()
+                        hotel_dict['Preco'] = float(price_text.replace('R$', ''))
+                    else:
+                        hotel_dict['Preco'] = 0.0  # Valor padrão
+
+                    hotel_dict['CapacidadePessoas'] = 2
+                    hotel_dict['Disponibilidade'] = True
+                    hotel_dict['Comodidades'] = 'Indisponível'
+                    hotel_dict['Estado'] = estado
+                    hotel_dict['Cidade'] = cidade
+                    hotel_dict['Endereco'] = f'Centro, {cidade}'
+                    hotel_dict['DonoId'] = owner_id  # Agora o owner_id está definido
+
+                    all_hotels_list.append(hotel_dict)
 
         browser.close()
 
@@ -176,11 +177,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
