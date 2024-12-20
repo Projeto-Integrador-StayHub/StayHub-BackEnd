@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StayHub_BackEnd.Models;
+using StayHub_BackEnd.Services.Quarto;
 using System.Text.Json;
 
 namespace StayHub_BackEnd.Data
@@ -24,6 +25,31 @@ namespace StayHub_BackEnd.Data
             modelBuilder.Entity<QuartoModel>()
                 .Property(q => q.Preco)
                 .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<QuartoModel>()
+               .Property(q => q.Cidade)
+               .HasMaxLength(100)
+               .IsRequired();
+
+            modelBuilder.Entity<QuartoModel>()
+                .Property(q => q.Estado)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            modelBuilder.Entity<QuartoModel>()
+                .Property(q => q.FotosPath)
+                .IsRequired(false);
+
+            modelBuilder.Entity<ReservaModel>()
+                .HasOne(r => r.Hospede)
+                .WithMany(h => h.Reservas)
+                .HasForeignKey(r => r.HospedeId);
+
+            modelBuilder.Entity<ReservaModel>()
+                .HasOne<QuartoModel>()
+                .WithMany()
+                .HasForeignKey(r => r.QuartoId);
+
         }
 
     }

@@ -10,8 +10,13 @@ namespace StayHub_BackEnd.DTOs
         public decimal Preco { get; set; }
         public int CapacidadePessoas { get; set; }
         public bool Disponibilidade { get; set; }
-        public List<string> Comodidades { get; set; }
+        public string Comodidades { get; set; }
         public string Endereco { get; set; }
+        public string Estado { get; set; }
+        public string Cidade { get; set; }
         public int DonoId { get; set; }
+        public IFormFile ? Fotos { get; set; }
+        public string ? FotosPath { get; set; }
     }
 }
+

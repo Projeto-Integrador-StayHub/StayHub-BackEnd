@@ -31,7 +31,7 @@ namespace StayHub_BackEnd.Controllers
         }
 
         [HttpPost("CriarQuarto")]
-        public async Task<ActionResult<ResponseModel<QuartoModel>>> CriarQuarto(QuartoDto quartoDto)
+        public async Task<ActionResult<ResponseModel<QuartoModel>>> CriarQuarto([FromForm] QuartoDto quartoDto)
         {
             var quartos = await _iquarto.CriarQuarto(quartoDto);
             return Ok(quartos);

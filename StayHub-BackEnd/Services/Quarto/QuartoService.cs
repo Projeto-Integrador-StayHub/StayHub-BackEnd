@@ -3,6 +3,7 @@ using StayHub_BackEnd.Data;
 using StayHub_BackEnd.DTOs;
 using StayHub_BackEnd.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
 
 namespace StayHub_BackEnd.Services.Quarto
 {
@@ -10,11 +11,13 @@ namespace StayHub_BackEnd.Services.Quarto
     {
         private readonly AppDbContext _context;
         private readonly ILogger<QuartoService> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public QuartoService(AppDbContext context, ILogger<QuartoService> logger)
+        public QuartoService(AppDbContext context, ILogger<QuartoService> logger, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _logger = logger;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<ResponseModel<List<object>>> ListarQuartos()
@@ -34,6 +37,10 @@ namespace StayHub_BackEnd.Services.Quarto
                         q.Preco,
                         q.CapacidadePessoas,
                         q.Disponibilidade,
+                        q.Comodidades,
+                        q.Cidade,
+                        q.Estado,
+                        q.Endereco,
                         Dono = new { q.Dono.Id, q.Dono.Nome }
                     })
                     .ToListAsync();
@@ -114,9 +121,38 @@ namespace StayHub_BackEnd.Services.Quarto
                     CapacidadePessoas = quartoDto.CapacidadePessoas,
                     Disponibilidade = quartoDto.Disponibilidade,
                     Comodidades = quartoDto.Comodidades,
+                    Estado = quartoDto.Estado,
+                    Cidade = quartoDto.Cidade,
                     Endereco = quartoDto.Endereco,
                     DonoId = quartoDto.DonoId
                 };
+
+                if (quartoDto.Fotos != null && quartoDto.Fotos.Length > 0)
+                {
+                    // Nome do arquivo a partir do nome original
+                    var fileName = Path.GetFileName(quartoDto.Fotos.FileName);
+
+                    // Caminho para salvar o arquivo na pasta uploads
+                    var uploadsPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+
+                    // Verificar se o diretório existe, caso contrário, cria-lo
+                    if (!Directory.Exists(uploadsPath))
+                    {
+                        Directory.CreateDirectory(uploadsPath);
+                    }
+
+                    // Caminho completo do arquivo
+                    var filePath = Path.Combine(uploadsPath, fileName);
+
+                    // Salvar o arquivo
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await quartoDto.Fotos.CopyToAsync(fileStream);
+                    }
+
+                    // Salvar o caminho relativo no DTO (path para a foto no servidor)
+                    quartoDto.FotosPath = Path.Combine("uploads", fileName); // Caminho relativo para ser salvo no banco
+                }
 
                 _context.Quartos.Add(quarto);
                 await _context.SaveChangesAsync();
@@ -163,7 +199,23 @@ namespace StayHub_BackEnd.Services.Quarto
                 quarto.CapacidadePessoas = quartoDto.CapacidadePessoas;
                 quarto.Disponibilidade = quartoDto.Disponibilidade;
                 quarto.Comodidades = quartoDto.Comodidades;
+                quarto.Estado = quartoDto.Estado;
+                quarto.Cidade = quartoDto.Cidade;
                 quarto.Endereco = quartoDto.Endereco;
+
+                if (quartoDto.Fotos != null && quartoDto.Fotos.Length > 0)
+                {
+                    var fileName = Path.GetFileName(quartoDto.Fotos.FileName);
+                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", fileName);
+
+                    // Salvar o arquivo na pasta uploads
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await quartoDto.Fotos.CopyToAsync(fileStream);
+                    }
+
+                    quartoDto.FotosPath = Path.Combine("uploads", fileName); // Salva o caminho no DTO
+                }
 
                 await _context.SaveChangesAsync();
 
@@ -213,6 +265,8 @@ namespace StayHub_BackEnd.Services.Quarto
                     CapacidadePessoas = quarto.CapacidadePessoas,
                     Disponibilidade = quarto.Disponibilidade,
                     Comodidades = quarto.Comodidades,
+                    Estado = quarto.Estado,
+                    Cidade = quarto.Cidade,
                     Endereco = quarto.Endereco,
                     DonoId = quarto.DonoId
                 };
