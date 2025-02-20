@@ -2,6 +2,7 @@
 using StayHub_BackEnd.Data;
 using StayHub_BackEnd.DTOs;
 using StayHub_BackEnd.Models;
+using StayHub_BackEnd.Utils;
 
 namespace StayHub_BackEnd.Services.Hospede
 {
@@ -75,7 +76,7 @@ namespace StayHub_BackEnd.Services.Hospede
                 {
                     Nome = hospedeDto.Nome,
                     Email = hospedeDto.Email,
-                    Senha = hospedeDto.Senha,
+                    Senha = PasswordHasher.HashPassword(hospedeDto.Senha),
                     Telefone = hospedeDto.Telefone,
                     Nascimento = hospedeDto.Nascimento,
                     Cpf = hospedeDto.Cpf,
@@ -118,7 +119,7 @@ namespace StayHub_BackEnd.Services.Hospede
 
                 hospede.Nome = hospedeDto.Nome;
                 hospede.Email = hospedeDto.Email;
-                hospede.Senha = hospedeDto.Senha;
+                hospede.Senha = PasswordHasher.HashPassword(hospedeDto.Senha);
                 hospede.Telefone = hospedeDto.Telefone;
                 hospede.Nascimento = hospedeDto.Nascimento;
                 hospede.Cpf = hospedeDto.Cpf;
@@ -179,10 +180,14 @@ namespace StayHub_BackEnd.Services.Hospede
 
         public async Task<HospedeModel> ValidateLoginAsync(string email, string senha)
         {
-            var hospede = await _context.Hospedes
-            .FirstOrDefaultAsync(h => h.Email == email && h.Senha == senha);
+            var hospede = await _context.Hospedes.FirstOrDefaultAsync(h => h.Email == email);
 
-            return hospede;
+            if (hospede != null && PasswordHasher.VerifyPassword(senha, hospede.Senha))
+            {
+                return hospede;
+            }
+
+            return null;
         }
     }
 }

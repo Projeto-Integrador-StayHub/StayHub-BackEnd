@@ -2,6 +2,7 @@
 using StayHub_BackEnd.Data;
 using StayHub_BackEnd.DTOs;
 using StayHub_BackEnd.Models;
+using StayHub_BackEnd.Utils;
 
 namespace StayHub_BackEnd.Services.Admin
 {
@@ -69,7 +70,7 @@ namespace StayHub_BackEnd.Services.Admin
                 {
                     Nome = adminDto.Nome,
                     Email = adminDto.Email,
-                    Senha = adminDto.Senha
+                    Senha = PasswordHasher.HashPassword(adminDto.Senha)
                 };
 
                 _context.Add(admin);
@@ -103,7 +104,7 @@ namespace StayHub_BackEnd.Services.Admin
 
                 admin.Nome = adminDto.Nome;
                 admin.Email = adminDto.Email;
-                admin.Senha = adminDto.Senha;
+                admin.Senha = PasswordHasher.HashPassword(adminDto.Senha);
 
                 _context.Update(admin);
                 await _context.SaveChangesAsync();
@@ -151,10 +152,14 @@ namespace StayHub_BackEnd.Services.Admin
 
         public async Task<AdminModel> ValidateLoginAsync(string email, string senha)
         {
-            var admin = await _context.Admins
-            .FirstOrDefaultAsync(x => x.Email == email && x.Senha == senha);
+            var admin = await _context.Admins.FirstOrDefaultAsync(x => x.Email == email);
 
-            return admin;
+            if (admin != null && PasswordHasher.VerifyPassword(senha, admin.Senha))
+            {
+                return admin;
+            }
+
+            return null;
         }
 
     }

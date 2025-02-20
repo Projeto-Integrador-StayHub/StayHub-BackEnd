@@ -2,6 +2,7 @@
 using StayHub_BackEnd.Data;
 using StayHub_BackEnd.DTOs;
 using StayHub_BackEnd.Models;
+using StayHub_BackEnd.Utils;
 
 namespace StayHub_BackEnd.Services.DonoHotel
 {
@@ -75,7 +76,7 @@ namespace StayHub_BackEnd.Services.DonoHotel
                 {
                     Nome = donoHotelDto.Nome,
                     Email = donoHotelDto.Email,
-                    Senha = donoHotelDto.Senha,
+                    Senha = PasswordHasher.HashPassword(donoHotelDto.Senha),
                     Telefone = donoHotelDto.Telefone,
                     Nascimento = donoHotelDto.Nascimento,
                     Cpf = donoHotelDto.Cpf,
@@ -113,7 +114,7 @@ namespace StayHub_BackEnd.Services.DonoHotel
 
                 dono.Nome = donoHotelDto.Nome;
                 dono.Email = donoHotelDto.Email;
-                dono.Senha = donoHotelDto.Senha;
+                dono.Senha = PasswordHasher.HashPassword(donoHotelDto.Senha);
                 dono.Telefone = donoHotelDto.Telefone;
                 dono.Nascimento = donoHotelDto.Nascimento;
                 dono.Cpf = donoHotelDto.Cpf;
@@ -187,10 +188,14 @@ namespace StayHub_BackEnd.Services.DonoHotel
 
         public async Task<DonoHotelModel> ValidateLoginAsync(string email, string senha)
         {
-            var dono = await _context.DonosHoteis
-            .FirstOrDefaultAsync(d => d.Email == email && d.Senha == senha);
+            var dono = await _context.DonosHoteis.FirstOrDefaultAsync(d => d.Email == email);
 
-            return dono;
+            if (dono != null && PasswordHasher.VerifyPassword(senha, dono.Senha))
+            {
+                return dono;
+            }
+
+            return null;
         }
 
     }
