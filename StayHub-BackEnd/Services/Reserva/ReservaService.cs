@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StayHub_BackEnd.Data;
 using StayHub_BackEnd.DTOs;
+using StayHub_BackEnd.Enums;
 using StayHub_BackEnd.Models;
 using StayHub_BackEnd.Services.Hospede;
 
@@ -81,15 +82,28 @@ namespace StayHub_BackEnd.Services.Reserva
                     return resposta;
                 }
 
+                // Verifica se o quarto já existe no banco de dados
+                var quarto = await _context.Quartos.FirstOrDefaultAsync(q => q.Id == reservaDto.QuartoId);
+                if (quarto == null)
+                {
+                    resposta.Mensagem = "Quarto não encontrado!";
+                    resposta.Status = false;
+                    return resposta;
+                }
+
+                // Altera a disponibilidade do quarto para false
+                quarto.Disponibilidade = false;
+
                 var reserva = new ReservaModel
                 {
                     HospedeId = reservaDto.HospedeId,
                     Nome = reservaDto.Nome,
-                    Descricao = reservaDto.Descricao,
                     Entrada = reservaDto.Entrada,
                     Saida = reservaDto.Saida,
                     Preco = reservaDto.Preco,
-                    Status = reservaDto.Status
+                    Status = ReservaStatus.Confirmada, // Define o status como Confirmada
+                    PagamentoStatus = reservaDto.PagamentoStatus,
+                    QuartoId = reservaDto.QuartoId // Adicionado o campo QuartoId
                 };
                 _context.Add(reserva);
                 await _context.SaveChangesAsync();
@@ -125,11 +139,10 @@ namespace StayHub_BackEnd.Services.Reserva
                 }
 
                 reserva.Nome = reservaDto.Nome;
-                reserva.Descricao = reservaDto.Descricao;
                 reserva.Entrada = reservaDto.Entrada;
                 reserva.Saida = reservaDto.Saida;
                 reserva.Preco = reservaDto.Preco;
-                reserva.Status = reservaDto.Status;
+                reserva.PagamentoStatus = reservaDto.PagamentoStatus;
 
                 if (reservaDto.HospedeId == null)
                 {
@@ -191,3 +204,5 @@ namespace StayHub_BackEnd.Services.Reserva
         }
     }
 }
+
+

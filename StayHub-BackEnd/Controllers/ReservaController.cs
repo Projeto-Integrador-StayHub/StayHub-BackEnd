@@ -29,11 +29,24 @@ namespace StayHub_BackEnd.Controllers
             return Ok(reserva);
         }
 
-        [HttpPost("CriarReserva/")]
-        public async Task<ActionResult<ResponseModel<List<ReservaModel>>>> CriarReserva(ReservaDto reservaDto)
+        [HttpPost("CriarReserva")]
+        public async Task<IActionResult> CriarReserva([FromBody] ReservaDto reservaDto)
         {
-            var reserva = await _reservaInterface.CriarReserva(reservaDto);
-            return Ok(reserva);
+            if (reservaDto == null)
+            {
+                return BadRequest("O campo reservaDto é obrigatório.");
+            }
+
+            var resultado = await _reservaInterface.CriarReserva(reservaDto);
+
+            if (resultado.Status)
+            {
+                return Ok(resultado);
+            }
+            else
+            {
+                return BadRequest(resultado.Mensagem);
+            }
         }
 
         [HttpPut("EditarReserva/{idReserva}")]
@@ -43,7 +56,6 @@ namespace StayHub_BackEnd.Controllers
             return Ok(reserva);
         }
 
-
         [HttpDelete("ExcluirReserva/{idReserva}")]
         public async Task<ActionResult<ResponseModel<List<ReservaModel>>>> ExcluirReserva(int idReserva)
         {
@@ -52,3 +64,5 @@ namespace StayHub_BackEnd.Controllers
         }
     }
 }
+
+

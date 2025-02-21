@@ -12,3 +12,5 @@ namespace StayHub_BackEnd.Services.Reserva
         Task<ResponseModel<List<ReservaModel>>> ExcluirReserva(int idReserva);
     }
 }
+
+
