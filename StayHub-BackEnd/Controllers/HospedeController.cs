@@ -3,6 +3,7 @@ using StayHub_BackEnd.Services.Hospede;
 using StayHub_BackEnd.DTOs;
 using StayHub_BackEnd.Models;
 using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StayHub_BackEnd.Controllers
 {
@@ -16,6 +17,8 @@ namespace StayHub_BackEnd.Controllers
             _hospedeInterface = iHospede;
         }
 
+
+        [Authorize]
         [HttpGet("ListarHospedes")]
         public async Task<ActionResult<ResponseModel<List<HospedeModel>>>> ListarHospedes()
         {
